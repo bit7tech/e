@@ -1,4 +1,4 @@
 @echo off
 pushd _build
-start agf.sln
+start e.sln
 popd

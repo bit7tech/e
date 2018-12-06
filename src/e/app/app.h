@@ -1,14 +1,14 @@
 //----------------------------------------------------------------------------------------------------------------------
-// Game base class.
+// App base class.
 //
 // This allows the platform layer to interact with the game layer.
 //----------------------------------------------------------------------------------------------------------------------
 
 #pragma once
 
-#include <agf/core.h>
+#include <e/core.h>
 
-namespace agf
+namespace e
 {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -138,15 +138,15 @@ namespace agf
     };
 
     //------------------------------------------------------------------------------------------------------------------
-    // Game class
+    // App class
 
     class CommandLine;
 
-    class Game
+    class App
     {
     public:
-        Game(const CommandLine& cmdLine) : m_cmdLine(cmdLine) {}
-        virtual ~Game() {}
+        App(const CommandLine& cmdLine) : m_cmdLine(cmdLine) {}
+        virtual ~App() {}
 
         // This function must return true until the game ends.
         virtual bool simulate(const SimulateIn& sim) = 0;

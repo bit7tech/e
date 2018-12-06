@@ -3,17 +3,17 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <agf/ext/stb_image.h>
+#include <e/ext/stb_image.h>
 
-#include <agf/core.h>
-#include <agf/data.h>
-#include <agf/game/game.h>
-#include <agf/platform/win32.h>
+#include <e/core.h>
+#include <e/data.h>
+#include <e/app/app.h>
+#include <e/platform/win32.h>
 #include <memory.h>
 #include <stdlib.h>
 #include <windowsx.h>
 
-using namespace agf;
+using namespace e;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -63,10 +63,10 @@ void openGLCompileShader(GLuint shader, const char* code)
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
     if (infoLogLength > 0)
     {
-        agf::string error;
+        e::string error;
         error.resize(infoLogLength);
         glGetShaderInfoLog(shader, infoLogLength, NULL, error.data());
-        agf::prn("{0}", error);
+        e::prn("{0}", error);
         abort();
     }
 }
@@ -86,10 +86,10 @@ GLuint openGLCreateProgram(GLuint vertexShader, GLuint fragmentShader)
     glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0)
     {
-        agf::string error;
+        e::string error;
         error.resize(logLength);
         glGetProgramInfoLog(program, logLength, NULL, error.data());
-        agf::prn("{0}", error);
+        e::prn("{0}", error);
         abort();
     }
 
@@ -98,7 +98,7 @@ GLuint openGLCreateProgram(GLuint vertexShader, GLuint fragmentShader)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GLuint openGLLoadFontTexture(agf::WindowInfo& info, const char* fileName)
+GLuint openGLLoadFontTexture(e::WindowInfo& info, const char* fileName)
 {
     Data file(fileName);
     GLuint textureID = 0;
@@ -451,7 +451,7 @@ void win32RenderOpenGL(WindowInfo& info)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void win32RunPresentation(WindowInfo& info, agf::Game& game)
+void win32RunPresentation(WindowInfo& info, e::App& app)
 {
     PresentIn pin;
     pin.width = info.imageSize.dx;
@@ -459,7 +459,7 @@ void win32RunPresentation(WindowInfo& info, agf::Game& game)
     pin.foreImage = info.foreImage;
     pin.backImage = info.backImage;
     pin.textImage = info.textImage;
-    game.present(pin);
+    app.present(pin);
 
     openGLUpdateDynamicTexture(info.foreTex, info.foreImage, info.imageSize.dx, info.imageSize.dy);
     openGLUpdateDynamicTexture(info.backTex, info.backImage, info.imageSize.dx, info.imageSize.dy);
@@ -470,7 +470,7 @@ void win32RunPresentation(WindowInfo& info, agf::Game& game)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void win32ResizeWindow(WindowInfo& info, Game& game, int newWidth, int newHeight)
+void win32ResizeWindow(WindowInfo& info, App& app, int newWidth, int newHeight)
 {
     if (info.glReady)
     {
@@ -489,21 +489,21 @@ void win32ResizeWindow(WindowInfo& info, Game& game, int newWidth, int newHeight
         info.imageSize.dx = cw;
         info.imageSize.dy = ch;
 
-        win32RunPresentation(info, game);
+        win32RunPresentation(info, app);
     }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
 
-namespace agf
+namespace e
 {
 
     //------------------------------------------------------------------------------------------------------------------
     // Constructor
 
-    Win32Platform::Win32Platform(Game& game, const CommandLine& cmdLine)
-        : Platform(game, cmdLine)
+    Win32Platform::Win32Platform(App& app, const CommandLine& cmdLine)
+        : Platform(app, cmdLine)
     {
         create();
     }
@@ -564,9 +564,9 @@ namespace agf
             sim.dt = timeToSecs(dt);
             last = t;
             
-            if (game().simulate(sim))
+            if (app().simulate(sim))
             {
-                win32RunPresentation(m_info, game());
+                win32RunPresentation(m_info, app());
             }
             else
             {
@@ -595,7 +595,7 @@ namespace agf
             wc.hIcon = wc.hIconSm = LoadIconA(0, IDI_APPLICATION);
             wc.hCursor = LoadCursorA(0, IDC_ARROW);
             wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-            wc.lpszClassName = "AGF_Window";
+            wc.lpszClassName = "E_Window";
             wc.cbWndExtra = sizeof(LONG_PTR);
 
             classAtom = RegisterClassExA(&wc);
@@ -608,7 +608,7 @@ namespace agf
         m_info.pos.h = 600;
         RECT r = win32CalcRect(m_info, style);
 
-        m_info.handle = CreateWindowA("AGF_Window", "AGF Demo", style, r.left, r.top,
+        m_info.handle = CreateWindowA("E_Window", "E", style, r.left, r.top,
             r.right - r.left, r.bottom - r.top, 0, 0, GetModuleHandle(0), this);
         if (m_info.handle)
         {
@@ -663,13 +663,13 @@ namespace agf
             switch (msg)
             {
             case WM_SIZE:
-                win32ResizeWindow(m_info, game(), LOWORD(l), HIWORD(l));
+                win32ResizeWindow(m_info, app(), LOWORD(l), HIWORD(l));
                 break;
 
             case WM_SIZING:
             {
                 RECT* rc = (RECT *)l;
-                win32ResizeWindow(m_info, game(), rc->right - rc->left, rc->bottom - rc->top);
+                win32ResizeWindow(m_info, app(), rc->right - rc->left, rc->bottom - rc->top);
             }
             break;
 

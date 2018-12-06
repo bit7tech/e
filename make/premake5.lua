@@ -1,4 +1,4 @@
--- AGF build script
+-- E build script
 
 rootdir = path.join(path.getdirectory(_SCRIPT), "..")
 
@@ -8,7 +8,7 @@ filter { "platforms:Win64" }
 
 
 -- Solution
-solution "agf"
+solution "e"
     language "C++"
     configurations { "Debug", "Release" }
     platforms { "Win64" }
@@ -38,7 +38,7 @@ solution "agf"
         optimize "full"
 
     -- Projects
-    project "agf"
+    project "e"
         targetdir "../_bin/%{cfg.platform}_%{cfg.buildcfg}_%{prj.name}"
         objdir "../_obj/%{cfg.platform}_%{cfg.buildcfg}_%{prj.name}"
         kind "WindowedApp"

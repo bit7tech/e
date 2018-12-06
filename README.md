@@ -1,17 +1,15 @@
-# ASCII GAME FRAMEWORK
+# E EDITOR
 
-AGF is a foundation for build ASCII style games.
-
-![ASCII Pacman](https://i.imgur.com/DmUxWU1.png)
+E is my own scriptable editor for my own work.
 
 ## Building
 
 There are 2 ways to build the executable.  One is via Visual Studio 2017, and another is via a batch file.  The
-executables will be found in the folder `_bin/<platform>_<configuration>_agf`, where `<platform>` is currently `Win64` and `<configuration>` is either `Debug` or `Release`.
+executables will be found in the folder `_bin/<platform>_<configuration>_e`, where `<platform>` is currently `Win64` and `<configuration>` is either `Debug` or `Release`.
 
 ### Building via Visual Studio 2017
 
-To build **agf.exe**:
+To build **e.exe**:
 
 * Run **gen.bat** to generate the solutions and projects inside the **_build** folder.
 * Run **edit.bat** to run Visual Studio 2017 with the solution open.
@@ -19,8 +17,8 @@ To build **agf.exe**:
 
 ### Building via a batch file
 
-To build **agf.exe** run **build.bat**.  This will set up your CLI environment ready for Visual Studio command line tools,
-build the release version of **agf.exe** using _msbuild_.
+To build **e.exe** run **build.bat**.  This will set up your CLI environment ready for Visual Studio command line tools,
+build the release version of **e.exe** using _msbuild_.
 
 ## Cleaning
 

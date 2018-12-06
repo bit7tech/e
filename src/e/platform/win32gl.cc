@@ -2,7 +2,7 @@
 // Win32 implementation of OpenGL functions.
 //----------------------------------------------------------------------------------------------------------------------
 
-#include <agf/platform/win32gl.h>
+#include <e/platform/win32gl.h>
 
 static HMODULE gl3w__libgl;
 

@@ -15,5 +15,5 @@ if "%VSINSTALLDIR%"=="" (
 )
 cd /d %folder%
 pushd _build
-msbuild agf.sln /t:rebuild /p:configuration=Release /p:platform=Win64 /m
+msbuild e.sln /t:rebuild /p:configuration=Release /p:platform=Win64 /m
 popd

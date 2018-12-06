@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include <agf/core.h>
-#include <agf/platform/base.h>
-#include <agf/platform/win32gl.h>
+#include <e/core.h>
+#include <e/platform/base.h>
+#include <e/platform/win32gl.h>
 
-namespace agf
+namespace e
 {
 
     class Game;
@@ -50,9 +50,9 @@ namespace agf
         GLuint      foreTex = 0;
         GLuint      backTex = 0;
         GLuint      textTex = 0;
-        agf::u32*   foreImage = nullptr;
-        agf::u32*   backImage = nullptr;
-        agf::u32*   textImage = nullptr;
+        e::u32*     foreImage = nullptr;
+        e::u32*     backImage = nullptr;
+        e::u32*     textImage = nullptr;
         Size        imageSize;
         bool        glReady = false;
     };
@@ -62,7 +62,7 @@ namespace agf
     class Win32Platform : public Platform
     {
     public:
-        Win32Platform(Game& game, const CommandLine& cmdLine);
+        Win32Platform(App& app, const CommandLine& cmdLine);
         ~Win32Platform() override;
 
         int run() override;

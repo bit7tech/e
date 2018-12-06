@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <agf/game/game.h>
+#include <e/app/app.h>
 
-namespace agf
+namespace e
 {
 
     class CommandLine;
@@ -14,8 +14,8 @@ namespace agf
     class Platform
     {
     public:
-        Platform(Game& game, const CommandLine& cmdLine)
-            : m_game(game)
+        Platform(App& game, const CommandLine& cmdLine)
+            : m_app(game)
             , m_cmdLine(cmdLine)
             , m_keyState()
             , m_mouseState()
@@ -26,8 +26,8 @@ namespace agf
 
         virtual int run() = 0;
 
-        Game& game() { return m_game; }
-        const Game& game() const { return m_game; }
+        App& app() { return m_app; }
+        const App& app() const { return m_app; }
 
         const CommandLine& cmdLine() const { return m_cmdLine; }
 
@@ -48,7 +48,7 @@ namespace agf
         virtual f64 timeToSecs(TimePeriod period) = 0;
 
     private:
-        Game&               m_game;
+        App&                m_app;
         const CommandLine&  m_cmdLine;
         KeyState            m_keyState;
         MouseState          m_mouseState;

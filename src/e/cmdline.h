@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <agf/core.h>
+#include <e/core.h>
 
-namespace agf
+namespace e
 {
 
     class CommandLine
