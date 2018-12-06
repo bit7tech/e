@@ -32,7 +32,7 @@ int eMain(int argc, char** argv)
     // This is a simple utility that processes and categorises each token in the command line.
     e::CommandLine cmdLine(argc, argv);
 
-    Editor e(cmdLine);
+    e::Editor e(cmdLine);
     e::Win32Platform platform(e, cmdLine);
 
     return platform.run();
