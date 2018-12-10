@@ -5,6 +5,7 @@
 #pragma once
 
 #include <e/app/app.h>
+#include <e/platform/fad.h>
 
 namespace e
 {
@@ -31,6 +32,8 @@ namespace e
 
         const CommandLine& cmdLine() const { return m_cmdLine; }
 
+        ExeDrive& getExeDrive() { return m_exeDrive; }
+
     protected:
         //
         // I/O
@@ -52,6 +55,7 @@ namespace e
         const CommandLine&  m_cmdLine;
         KeyState            m_keyState;
         MouseState          m_mouseState;
+        ExeDrive            m_exeDrive;
     };
 
 }
