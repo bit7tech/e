@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#define func auto
+
 //----------------------------------------------------------------------------------------------------------------------
 // Platform detection
 //----------------------------------------------------------------------------------------------------------------------
@@ -157,12 +159,12 @@ namespace e
     // Character conversion routines
     //------------------------------------------------------------------------------------------------------------------
 
-    inline bool isDigit(char c)
+    inline func isDigit(char c) -> bool
     {
         return ('0' <= c) && (c <= '9');
     }
 
-    inline int toDigit(char c)
+    inline func toDigit(char c) -> int
     {
         return c - '0';
     }
@@ -185,14 +187,14 @@ namespace e
                 memset(m_count, 0, sizeof(int) * N);
             }
 
-            void onMarker(int markerNumber)
+            func onMarker(int markerNumber) -> void
             {
                 ++m_count[markerNumber];
             }
 
-            void onEscapeLeft() { ++m_braceEscapes; }
-            void onEscapeRight() { ++m_braceEscapes; }
-            void onChar(char c) { ++m_plainChars; }
+            func onEscapeLeft() -> void { ++m_braceEscapes; }
+            func onEscapeRight() -> void { ++m_braceEscapes; }
+            func onChar(char c) -> void { ++m_plainChars; }
         };
 
         template <int N>
@@ -205,24 +207,24 @@ namespace e
                 , m_values(values)
             {}
 
-            void onMarker(int markerNumber)
+            func onMarker(int markerNumber) -> void
             {
                 size_t len = m_values[markerNumber].length();
                 m_dest.replace(m_size, len, m_values[markerNumber]);
                 m_size += len;
             }
 
-            void onEscapeLeft()
+            func onEscapeLeft() -> void
             {
                 m_dest[m_size++] = '{';
             }
 
-            void onEscapeRight()
+            func onEscapeRight() -> void
             {
                 m_dest[m_size++] = '}';
             }
 
-            void onChar(char c)
+            func onChar(char c) -> void
             {
                 m_dest[m_size++] = c;
             }
@@ -234,7 +236,7 @@ namespace e
         };
 
         template <int N, typename Handler>
-        inline void traverse(const char* format, Handler& callback)
+        inline func traverse(const char* format, Handler& callback) -> void
         {
             const char* c = format;
             while (*c != 0)
@@ -297,7 +299,7 @@ namespace e
         } // traverse
 
         template <int N>
-        inline size_t formattedTotal(string values[N], int counts[N])
+        inline func formattedTotal(string values[N], int counts[N]) -> size_t
         {
             size_t total = 0;
             for (int i = 0; i < N; ++i)
@@ -308,7 +310,7 @@ namespace e
         }
 
         template <int N>
-        inline string formatArray(const char* format, string values[N])
+        inline func formatArray(const char* format, string values[N]) -> string
         {
             Counter<N> counter;
             traverse<N>(format, counter);
@@ -324,7 +326,7 @@ namespace e
         }
 
         template <int N, typename T>
-        inline void internalStringFormat(int index, string values[N], T t)
+        inline func internalStringFormat(int index, string values[N], T t) -> void
         {
             std::ostringstream ss;
             ss << t;
@@ -332,7 +334,7 @@ namespace e
         }
 
         template <int N, typename T, typename ...Args>
-        inline void internalStringFormat(int index, string values[N], T t, Args... args)
+        inline func internalStringFormat(int index, string values[N], T t, Args... args) -> void
         {
             std::ostringstream ss;
             ss << t;
@@ -341,19 +343,19 @@ namespace e
         }
 
         template <int N>
-        inline void internalStringFormat(int index, string values[N])
+        inline func internalStringFormat(int index, string values[N]) -> void
         {
         }
 
     } // namespace
 
-    inline string stringFormat(const char* format)
+    inline func stringFormat(const char* format) -> string
     {
         return string(format);
     }
 
     template <typename ...Args>
-    inline string stringFormat(const char* format, Args... args)
+    inline func stringFormat(const char* format, Args... args) -> string
     {
         string values[sizeof...(args)];
         internalStringFormat<sizeof...(args), Args...>(0, values, args...);
@@ -361,7 +363,7 @@ namespace e
     }
 
     template <typename... Args>
-    inline void pr(Args... args)
+    inline func pr(Args... args) -> void
     {
         string s = stringFormat(args...);
 #ifdef WIN32
@@ -370,27 +372,27 @@ namespace e
     }
 
     template <typename... Args>
-    inline void prn(Args... args)
+    inline func prn(Args... args) -> void
     {
         pr(args...);
         OutputDebugStringA("\n");
     }
 
-    inline std::string fromWString(const std::wstring& ws)
-    {
-        using conv_t = std::codecvt_utf8<wchar_t>;
-        std::wstring_convert<conv_t, wchar_t> conv;
+    //------------------------------------------------------------------------------------------------------------------
 
-        return conv.to_bytes(ws);
+    template <typename T>
+    T min(T a, T b)
+    {
+        return a < b ? a : b;
     }
 
-    inline std::wstring toWString(const std::string& str)
+    template <typename T>
+    T max(T a, T b)
     {
-        using conv_t = std::codecvt_utf8<wchar_t>;
-        std::wstring_convert<conv_t, wchar_t> conv;
-
-        return conv.from_bytes(str);
+        return a < b ? b : a;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
 
 }
 

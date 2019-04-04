@@ -5,6 +5,8 @@
 
 #include <e/editor/editor.h>
 
+#include <algorithm>
+
 namespace e
 {
 
@@ -15,8 +17,11 @@ namespace e
 
     Editor::Editor(const e::CommandLine& commandLine)
         : App(commandLine)
+        , m_console()
+        , m_topLine(0)
     {
-
+        m_console.outputLine("");
+        m_console.outputLine("Hello, World!");
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -54,11 +59,39 @@ namespace e
 
     void Editor::present(const e::PresentIn& pin)
     {
-        for (int i = 0; i < pin.width * pin.height; ++i)
+        u32* textImage = pin.textImage;
+        u32* foreImage = pin.foreImage;
+        u32* backImage = pin.backImage;
+
+        for (int line = 0; line < pin.height; ++line)
         {
-            pin.foreImage[i] = 0xffffffff;
-            pin.backImage[i] = 0xff000000;
-            pin.textImage[i] = 0;
+            const auto lineStr = m_console.getLine(m_topLine + line);
+            if (lineStr.first == nullptr)
+            {
+                // Blank line
+                for (int i = 0; i < pin.width; ++i)
+                {
+                    *textImage++ = u32(' ');
+                    *foreImage++ = 0xff000000;
+                    *backImage++ = 0xff000000;
+                }
+            }
+            else
+            {
+                int lineSize = min(int(lineStr.second - lineStr.first), pin.width);
+                for (int i = 0; i < lineSize; ++i)
+                {
+                    *textImage++ = u32(lineStr.first[i].ch);
+                    *foreImage++ = lineStr.first[i].fore;
+                    *backImage++ = lineStr.first[i].back;
+                }
+                for (int i = lineSize; i < pin.width; ++i)
+                {
+                    *textImage++ = u32(' ');
+                    *foreImage++ = 0xff000000;
+                    *backImage++ = 0xff000000;
+                }
+            }
         }
 
         //

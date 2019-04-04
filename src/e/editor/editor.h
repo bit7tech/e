@@ -3,6 +3,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #include <e/app/app.h>
+#include <e/editor/console.h>
 
 class CommandLine;
 
@@ -39,7 +40,13 @@ namespace e
         //
         // Cursor information
         //
-        CursorInfo  m_cursor;
+        CursorInfo      m_cursor;
+
+        //
+        // Display information
+        //
+        ConsoleData     m_console;
+        size_t          m_topLine;
     };
 
 }
