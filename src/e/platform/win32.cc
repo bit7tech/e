@@ -98,27 +98,23 @@ GLuint openGLCreateProgram(GLuint vertexShader, GLuint fragmentShader)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-GLuint openGLLoadFontTexture(ExeDrive& exeDrive, WindowInfo& info, const char* fileName)
+GLuint openGLLoadFontTexture(WindowInfo& info, const u8* data, u64 size)
 {
-    vector<u8> file = exeDrive.loadFile(fileName);
     GLuint textureID = 0;
 
-    if (file.size())
-    {
-        int width, height, bpp;
-        u32* image = (u32*)stbi_load_from_memory(file.data(), (int)file.size(), &width, &height, &bpp, 4);
-        info.fontSize.dx = width / 16;
-        info.fontSize.dy = height / 16;
+    int width, height, bpp;
+    u32* image = (u32*)stbi_load_from_memory(data, (int)size, &width, &height, &bpp, 4);
+    info.fontSize.dx = width / 16;
+    info.fontSize.dy = height / 16;
 
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        stbi_image_free(image);
-    }
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    stbi_image_free(image);
     return textureID;
 }
 
@@ -256,7 +252,14 @@ GLuint loadFontTexture(WindowInfo& info, const char* fileName)
     return textureID;
 }
 
-void openGLInit(ExeDrive& exeDrive, WindowInfo& info, int width, int height)
+extern const uint8_t data_ascii_vs[];
+extern const uint64_t size_data_ascii_vs;
+extern const uint8_t data_ascii_fs[];
+extern const uint64_t size_data_ascii_fs;
+extern const uint8_t data_font1_png[];
+extern const uint64_t size_data_font1_png;
+
+void openGLInit(WindowInfo& info, int width, int height)
 {
     static const GLfloat buffer[] = {
         //  X       Y       TX      TY
@@ -287,8 +290,8 @@ void openGLInit(ExeDrive& exeDrive, WindowInfo& info, int width, int height)
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
     string exePath = win32GetExePathName();
-    vector<u8> vertexCode = exeDrive.loadFile("ascii.vs");
-    vector<u8> pixelCode = exeDrive.loadFile("ascii.fs");
+    vector<u8> vertexCode(data_ascii_vs, data_ascii_vs + size_data_ascii_vs);
+    vector<u8> pixelCode(data_ascii_fs, data_ascii_vs + size_data_ascii_fs);
     vertexCode.push_back(0);
     pixelCode.push_back(0);
 
@@ -304,7 +307,7 @@ void openGLInit(ExeDrive& exeDrive, WindowInfo& info, int width, int height)
     glUseProgram(info.program);
 
     // Set up textures
-    info.fontTex = openGLLoadFontTexture(exeDrive, info, "font1.png");
+    info.fontTex = openGLLoadFontTexture(info, data_font1_png, size_data_font1_png);
     int cw = width / info.fontSize.dx;
     int ch = height / info.fontSize.dy;
     info.foreTex = openGLCreateDynamicTexture(cw, ch, &info.foreImage);
@@ -644,7 +647,7 @@ namespace e
             wglMakeCurrent(m_info.dc, m_info.gl);
             glInit();
 
-            openGLInit(getExeDrive(), m_info, 800, 600);
+            openGLInit(m_info, 800, 600);
         }
     }
 
